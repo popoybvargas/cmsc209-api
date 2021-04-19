@@ -1,0 +1,21 @@
+{
+  "name": "pern-stack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "Popoy Vargas <popoyvargas@me.com> (https://teamzv.rocks/)",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "pg": "^8.5.1",
+    "zv-load.env": "^2.0.6",
+    "zv-utils": "^2.2.0"
+  }
+}
