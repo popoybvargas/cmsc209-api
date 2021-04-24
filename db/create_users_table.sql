@@ -6,5 +6,6 @@ CREATE TABLE users
 	email VARCHAR(50) UNIQUE,
 	password VARCHAR(64) NOT NULL,
 	role role NOT NULL DEFAULT 'user',
-	password_changed_at TIMESTAMP
+	password_changed_at TIMESTAMP,
+	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
