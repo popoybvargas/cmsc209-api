@@ -23,11 +23,15 @@ CREATE TABLE suppliers (
 	id BIGSERIAL PRIMARY KEY,
 	name VARCHAR(100) NOT NULL UNIQUE,
 	address TEXT NOT NULL,
-	contact_person VARCHAR(50) NOT NULL,
-	contact_number VARCHAR(20) NOT NULL,
+	contact_person VARCHAR(50),
+	contact_number VARCHAR(20),
 	payment_mode payment,
 	credit_term INT DEFAULT 0,
-	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+	active BOOL NOT NULL DEFAULT true,
+	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	created_by BIGINT REFERENCES users(id) NOT NULL,
+	updated_at TIMESTAMPTZ,
+	updated_by BIGINT REFERENCES users(id)
 );
 
 CREATE TABLE items (
@@ -35,8 +39,12 @@ CREATE TABLE items (
 	name VARCHAR(100) NOT NULL UNIQUE,
 	category_id BIGINT REFERENCES categories(id) ON DELETE CASCADE,
 	description TEXT,
+	quantity INT NOT NULL DEFAULT 0,
 	unit_of_measure unit,
-	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	created_by BIGINT REFERENCES users(id) NOT NULL,
+	updated_at TIMESTAMPTZ,
+	updated_by BIGINT REFERENCES users(id)
 );
 
 CREATE TABLE purchases (
@@ -45,7 +53,9 @@ CREATE TABLE purchases (
 	quantity DECIMAL NOT NULL,
 	supplier_id BIGINT REFERENCES suppliers(id) NOT NULL,
 	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-	created_by BIGINT REFERENCES users(id) NOT NULL
+	created_by BIGINT REFERENCES users(id) NOT NULL,
+	updated_at TIMESTAMPTZ,
+	updated_by BIGINT REFERENCES users(id)
 );
 
 CREATE TABLE consumptions (
@@ -53,7 +63,9 @@ CREATE TABLE consumptions (
 	item_id BIGINT REFERENCES items(id) ON DELETE CASCADE NOT NULL,
 	quantity DECIMAL NOT NULL,
 	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-	created_by BIGINT REFERENCES users(id) NOT NULL
+	created_by BIGINT REFERENCES users(id) NOT NULL,
+	updated_at TIMESTAMPTZ,
+	updated_by BIGINT REFERENCES users(id)
 );
 
 CREATE TABLE writeoffs (
@@ -62,5 +74,7 @@ CREATE TABLE writeoffs (
 	quantity DECIMAL NOT NULL,
 	just_cause VARCHAR(100) NOT NULL,
 	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-	created_by BIGINT REFERENCES users(id) NOT NULL
+	created_by BIGINT REFERENCES users(id) NOT NULL,
+	updated_at TIMESTAMPTZ,
+	updated_by BIGINT REFERENCES users(id)
 );
