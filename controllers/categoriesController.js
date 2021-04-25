@@ -17,7 +17,7 @@ exports.getAllCategories = async (req, res, next) =>
 			data: { categories }
 		});
 	}
-	catch
+	catch (err)
 	{
 		console.log(err);
 
