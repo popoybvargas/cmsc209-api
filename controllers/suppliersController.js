@@ -4,6 +4,54 @@ const db = require('../db');
 
 const fields = [ 'name', 'address', 'contact_person', 'contact_number', 'payment_mode', 'credit_term' ];
 
+exports.createSupplier = async (req, res) =>
+{
+	try
+	{
+		const supplier = _.pick(req.body, ...fields);
+		const supplierValues = [];
+
+		for (const field of fields)
+		{
+			if (supplier[field]) supplierValues.push(supplier[field]);
+			else if (field === 'payment_mode') supplierValues.push('cash');
+			else if (field === 'credit_term') supplierValues.push(0);
+			else supplierValues.push('');
+		}
+
+		supplierValues.push(req.user.id);
+
+		const { rows } = await db.query('INSERT INTO suppliers (name, address, contact_person, contact_number, payment_mode, credit_term, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', supplierValues);
+		
+		if (rows.length > 0)
+		{
+			res.status(201).json(
+			{
+				status: 'success',
+				data: { supplier: rows[0] }
+			});
+		}
+		else
+		{
+			res.status(500).json(
+			{
+				status: 'fail',
+				message: 'Unable to insert data'
+			});
+		}
+	}
+	catch (err)
+	{
+		console.log(err);
+
+		res.status(400).json(
+		{
+			status: 'fail',
+			message: err.message
+		});
+	}
+};
+
 exports.getAllSuppliers = async (req, res, next) =>
 {
 	try
@@ -74,22 +122,22 @@ exports.updateSupplier = async (req, res) =>
 		if (!supplier) return res.status(400).json(
 		{
 			status: 'fail',
-			message: '💥 Invalid ID!'
+			message: 'Record does not exist'
 		});
 		
 		const updates = _.pick(req.body, ...fields);
-		
-		for (const [ key, val ] of Object.entries(updates))
+		const supplierUpdates = [];
+
+		for (const field of fields)
 		{
-			supplier[key] = val;
+			if (updates[field]) supplierUpdates.push(updates[field]);
+			else supplierUpdates.push(supplier[field]);
 		}
 		
-		const queryValues = [ ...Object.values(_.pick(supplier, ...fields)) ];
-
-		if (queryValues.length < 6) queryValues.push(0);
+		supplierUpdates.push(new Date(), req.user.id, id);
 
 		const query = 'UPDATE suppliers SET name = $1, address = $2, contact_person = $3, contact_number = $4, payment_mode = $5, credit_term = $6, updated_at = $7, updated_by = $8 WHERE id = $9 RETURNING *';
-		const response = await db.query(query, [ ...queryValues, new Date(), req.user.id, id ]);
+		const response = await db.query(query, supplierUpdates);
 		
 		if (rows.length > 0)
 		{

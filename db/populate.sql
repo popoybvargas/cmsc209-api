@@ -8,8 +8,8 @@ INSERT INTO categories (name) VALUES
 	('Rice Meals Ingredients'),
 	('Sanitary');
 
-INSERT INTO suppliers (name, address, contact_number, payment_mode, created_by) VALUES
-	('S&R', 'E.O. Perez & Ouano Ave., N.R.A., Mandaue City', '(032) 238-9998', 'cash',
+INSERT INTO suppliers (name, address, contact_number, created_by) VALUES
+	('S&R', 'E.O. Perez & Ouano Ave., N.R.A., Mandaue City', '(032) 238-9998',
 		(SELECT id from users WHERE username = 'admin')
 	);
 
