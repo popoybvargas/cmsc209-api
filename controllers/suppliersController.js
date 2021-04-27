@@ -174,7 +174,7 @@ exports.deleteSupplier = async (req, res) =>
 	{
 		const { id } = req.params;
 
-		const { rowCount } = await db.query('UPDATE suppliers SET active = false WHERE id = $1', [ id ]);
+		const { rowCount } = await db.query('UPDATE suppliers SET active = false, updated_at = $1, updated_by = $2 WHERE id = $3', [ new Date(), req.user.id, id ]);
 		
 		if (rowCount > 0) res.status(204).json({ status: 'success' });
 		else res.status(500).json(

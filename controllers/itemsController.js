@@ -168,13 +168,18 @@ exports.updateItem = async (req, res) =>
 	}
 };
 
+exports.updateQuantity = async (id, quantity, userId) =>
+{
+	return await db.query('UPDATE items SET quantity = (quantity + $1), updated_at = $2, updated_by = $3 WHERE id = $4', [ quantity, new Date(), userId, id ]);
+};
+
 exports.deleteItem = async (req, res) =>
 {
 	try
 	{
 		const { id } = req.params;
 
-		const { rowCount } = await db.query('UPDATE items SET active = false WHERE id = $1', [ id ]);
+		const { rowCount } = await db.query('UPDATE items SET active = false, updated_at = $1, updated_by = $2 WHERE id = $3', [ new Date(), req.user.id, id ]);
 		
 		if (rowCount > 0) res.status(204).json({ status: 'success' });
 		else res.status(500).json(
