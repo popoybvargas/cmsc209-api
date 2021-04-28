@@ -6,6 +6,7 @@ const categoriesRouter = require('./routers/categoriesRouter');
 const suppliersRouter = require('./routers/suppliersRouter');
 const itemsRouter = require('./routers/itemsRouter');
 const purchasesRouter = require('./routers/purchasesRouter');
+const consumptionsRouter = require('./routers/consumptionsRouter');
 
 const app = express();
 
@@ -18,5 +19,6 @@ app.use(`${v1}/categories`, categoriesRouter);
 app.use(`${v1}/suppliers`, suppliersRouter);
 app.use(`${v1}/items`, itemsRouter);
 app.use(`${v1}/purchases`, purchasesRouter);
+app.use(`${v1}/consumptions`, consumptionsRouter);
 
 module.exports = app;

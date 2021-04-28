@@ -65,7 +65,9 @@ CREATE TABLE purchases (
 CREATE TABLE consumptions (
 	id BIGSERIAL PRIMARY KEY,
 	item_id BIGINT REFERENCES items(id) ON DELETE CASCADE NOT NULL,
-	quantity DECIMAL NOT NULL,
+	quantity DECIMAL NOT NULL CHECK(quantity > 0),
+	unit_of_measure unit,
+	active BOOL NOT NULL DEFAULT true,
 	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 	created_by BIGINT REFERENCES users(id) NOT NULL,
 	updated_at TIMESTAMPTZ,
