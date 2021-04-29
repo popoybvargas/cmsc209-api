@@ -77,8 +77,10 @@ CREATE TABLE consumptions (
 CREATE TABLE writeoffs (
 	id BIGSERIAL PRIMARY KEY,
 	item_id BIGINT REFERENCES items(id) ON DELETE CASCADE NOT NULL,
-	quantity DECIMAL NOT NULL,
+	quantity DECIMAL NOT NULL CHECK(quantity > 0),
+	unit_of_measure unit,
 	just_cause VARCHAR(100) NOT NULL,
+	active BOOL NOT NULL DEFAULT true,
 	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 	created_by BIGINT REFERENCES users(id) NOT NULL,
 	updated_at TIMESTAMPTZ,

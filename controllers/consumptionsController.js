@@ -138,6 +138,13 @@ exports.updateConsumption = async (req, res) =>
 		});
 
 		const { quantity } = req.body;
+		
+		if (!quantity) return res.status(400).json(
+		{
+			status: 'fail',
+			message: 'No update provided'
+		});
+
 		const inventoryAdjustment = quantity ? quantity - consumption.quantity : null;
 		
 		const query = 'UPDATE consumptions SET quantity = $1, updated_at = $2, updated_by = $3 WHERE id = $4 RETURNING *';
