@@ -1,28 +1,38 @@
 const express = require('express');
+const helmet = require('helmet');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+const slowDown = require('express-slow-down');
 const morgan = require('morgan');
 
-const router = require('./routers/usersRouter');
-const categoriesRouter = require('./routers/categoriesRouter');
-const suppliersRouter = require('./routers/suppliersRouter');
-const itemsRouter = require('./routers/itemsRouter');
-const purchasesRouter = require('./routers/purchasesRouter');
-const consumptionsRouter = require('./routers/consumptionsRouter');
-const writeoffsRouter = require('./routers/writeoffsRouter');
+const router = require('./routers');
 
 const app = express();
 
+app.use(helmet());
 app.use(cors());
 app.use(morgan('tiny'));
 app.use(express.json(), express.urlencoded({ extended: true }));
 
-const v1 = '/api/v1';
-app.use(`${v1}/users`, router);
-app.use(`${v1}/categories`, categoriesRouter);
-app.use(`${v1}/suppliers`, suppliersRouter);
-app.use(`${v1}/items`, itemsRouter);
-app.use(`${v1}/purchases`, purchasesRouter);
-app.use(`${v1}/consumptions`, consumptionsRouter);
-app.use(`${v1}/writeoffs`, writeoffsRouter);
+const limiter = rateLimit(
+{
+  windowMs: 30 * 1000,
+  max: 10
+});
+
+app.use(limiter);
+
+app.enable('trust proxy');
+
+const speedLimiter = slowDown(
+{
+  windowMs: 30 * 1000,
+  delayAfter: 10,
+  delayMs: 500
+});
+
+app.use(speedLimiter);
+
+app.use('/api/v1', router);
 
 module.exports = app;

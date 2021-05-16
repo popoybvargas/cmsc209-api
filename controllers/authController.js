@@ -31,7 +31,7 @@ exports.signup = async (req, res) =>
 		user.password = await bcrypt.hash(user.password, 12);
 		delete user.passwordConfirm;
 
-		const { rows } = await db.query('INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email', Object.values(user));
+		const { rows } = await db.query('INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email, role', Object.values(user));
 		
 		if (rows.length > 0)
 		{
@@ -80,10 +80,13 @@ exports.login = async (req, res, next) =>
 		
 		const token = signToken({ id: rows[0].id, email });
 
+		delete rows[0]['password'];
+
 		res.status(200).json(
 		{
 			status: 'success',
-			token
+			token,
+			data: { user: rows[0] }
 		});
 	}
 	catch (err)
