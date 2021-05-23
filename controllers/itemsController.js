@@ -55,7 +55,7 @@ exports.getAllItems = async (req, res, next) =>
 {
 	try
 	{
-		const query = 'SELECT i.id, i.name, (SELECT name FROM categories WHERE id = i.category_id) category, i.description, i.quantity, i.unit_of_measure, i.created_at, u.username created_by, i.updated_at, (SELECT username FROM users WHERE id = i.updated_by) updated_by FROM items i LEFT JOIN users u ON i.created_by = u.id WHERE i.active = true';
+		const query = 'SELECT i.id, i.name, category_id, (SELECT name FROM categories WHERE id = i.category_id) category, i.description, i.quantity, i.unit_of_measure, i.created_at, u.username created_by, i.updated_at, (SELECT username FROM users WHERE id = i.updated_by) updated_by FROM items i LEFT JOIN users u ON i.created_by = u.id WHERE i.active = true';
 		const { rows: items } = await db.query(query);
 		
 		res.status(200).json(
