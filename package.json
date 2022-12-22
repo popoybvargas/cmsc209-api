@@ -17,7 +17,7 @@
     "express-rate-limit": "^5.2.6",
     "express-slow-down": "^1.4.0",
     "helmet": "^4.6.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "morgan": "^1.10.0",
     "pg": "^8.5.1",
     "zv-load.env": "^2.0.6",
